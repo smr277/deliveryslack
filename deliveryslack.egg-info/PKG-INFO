@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: deliveryslack
+Version: 0.5.0
+Summary: Read in emails and track packages. Post package information onto slack
+Home-page: https://github.com/smr277/deliveryslack
+Author: Sam Rosenstein
+Author-email: smr277@cornell.edu
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
