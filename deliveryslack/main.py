@@ -80,6 +80,7 @@ def main():
         parser.add_argument('--wait', '-w', help="Wait time before checking again, in minutes", nargs=1, type=int, default=10)
         parser.add_argument('--erase', '-e', help="Erase the database", action="store_true", default=False)
         parser.add_argument('--erase_tables', '-et', help="Erase just the pacakges in the database", action="store_true", default=False)
+        parser.add_argument('--slack_channel', '-sc', help="The slack channel to post to", nargs=1, type=str, default='shipments')
         args = parser.parse_args()
         if args.erase:
             token_table = DB.table('token')
@@ -104,7 +105,6 @@ def main():
             token = raw_input("Please enter your Slack Token. You only need to do this once: ")
             token_table.insert({'token_type':'SLACK_TOKEN', 'token':token})
         print("Loaded tokens")
-        
 
         if args.server:
             EG = EmailGrabber(args.username[0], args.password[0], server=args.server)
@@ -112,13 +112,18 @@ def main():
             EG = EmailGrabber(args.username[0], args.password[0])
         PH = PackageHolder(db_dict=DB_PKGS.all())
         slack = Slacker(ds.SLACK_TOKEN)
+        slack.chat.post_message("#"+args.slack_channel[0], "Hi, I'm here to help with deliveries!", username="Fred, your delivery guy")
+
         emails = EG.pull_emails()
         for itm in emails:
             PH.extractor(itm)
         PH.update_packages()
         string = PH.string_package_updates()
         if string:
-            slack.chat.post_message('#test', string)
+            try:
+                slack.chat.post_message("#"+args.slack_channel[0], string, username="Fred, your delivery guy")
+            except Exception as e:
+                print("Slack failed: {}".format(e))
             print(string)
         time.sleep(args.wait*60)
 
