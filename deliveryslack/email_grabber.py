@@ -42,7 +42,10 @@ class EmailGrabber():
                         body+= h.handle(string)
                         continue
                     else:
-                        body+=payload.get_payload(decode=True)
+                        try:
+                            body+=str(payload.get_payload(decode=True))
+                        except:
+                            continue
             else:
                 body+=msg.get_payload(decode=True)
             parsed_emails.append((from_person, body))
